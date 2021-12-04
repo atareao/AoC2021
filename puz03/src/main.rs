@@ -11,5 +11,3 @@ fn main() {
     part1(data);
     part2(data);
 }
-
-
