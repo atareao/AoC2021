@@ -58,7 +58,7 @@ The score of the winning board can now be calculated. Start by finding the sum o
 
 To guarantee victory against the giant squid, figure out which board will win first. What will your final score be if you choose that board?
 
-Your puzzle answer was 58838.
+Your puzzle answer was X.
 --- Part Two ---
 
 On the other hand, it might be wise to try a different strategy: let the giant squid win.
@@ -69,6 +69,4 @@ In the above example, the second board is the last to win, which happens after 1
 
 Figure out which board will win last. Once it wins, what would its final score be?
 
-Your puzzle answer was 6256.
-
-Both parts of this puzzle are complete! They provide two gold stars: **
+Your puzzle answer was X.

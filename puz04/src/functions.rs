@@ -1,5 +1,3 @@
-use std::convert::{TryFrom, TryInto};
-
 pub struct Carton{
     lineas: Vec<Vec<i32>>
 }
