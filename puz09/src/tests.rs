@@ -23,6 +23,6 @@ fn test_part1(){
 #[test]
 fn test_part2(){
     println!("========== PART 2 ==========");
-    let result2 = 61229;//part2(TEST_DATA);
-    assert_eq!(result2, 61229);
+    let result2 = part2(TEST_DATA);
+    assert_eq!(result2, 1134);
 }
