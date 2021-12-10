@@ -1,60 +1,70 @@
---- Day 7: The Treachery of Whales ---
+--- Day 9: Smoke Basin ---
 
-A giant whale has decided your submarine is its next meal, and it's much faster than you are. There's nowhere to run!
+These caves seem to be lava tubes. Parts are even still volcanically active; small hydrothermal vents release smoke into the caves that slowly settles like rain.
 
-Suddenly, a swarm of crabs (each in its own tiny submarine - it's too deep for them otherwise) zooms in to rescue you! They seem to be preparing to blast a hole in the ocean floor; sensors indicate a massive underground cave system just beyond where they're aiming!
+If you can model how the smoke flows through the caves, you might be able to avoid it and be that much safer. The submarine generates a heightmap of the floor of the nearby caves for you (your puzzle input).
 
-The crab submarines all need to be aligned before they'll have enough power to blast a large enough hole for your submarine to get through. However, it doesn't look like they'll be aligned before the whale catches you! Maybe you can help?
+Smoke flows to the lowest point of the area it's in. For example, consider the following heightmap:
 
-There's one major catch - crab submarines can only move horizontally.
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
 
-You quickly make a list of the horizontal position of each crab (your puzzle input). Crab submarines have limited fuel, so you need to find a way to make all of their horizontal positions match while requiring them to spend as little fuel as possible.
+Each number corresponds to the height of a particular location, where 9 is the highest and 0 is the lowest a location can be.
 
-For example, consider the following horizontal positions:
+Your first goal is to find the low points - the locations that are lower than any of its adjacent locations. Most locations have four adjacent locations (up, down, left, and right); locations on the edge or corner of the map have three or two adjacent locations, respectively. (Diagonal locations do not count as adjacent.)
 
-16,1,2,0,4,2,7,1,2,14
+In the above example, there are four low points, all highlighted: two are in the first row (a 1 and a 0), one is in the third row (a 5), and one is in the bottom row (also a 5). All other locations on the heightmap have some lower adjacent location, and so are not low points.
 
-This means there's a crab with horizontal position 16, a crab with horizontal position 1, and so on.
+The risk level of a low point is 1 plus its height. In the above example, the risk levels of the low points are 2, 1, 6, and 6. The sum of the risk levels of all low points in the heightmap is therefore 15.
 
-Each change of 1 step in horizontal position of a single crab costs 1 fuel. You could choose any horizontal position to align them all on, but the one that costs the least fuel is horizontal position 2:
-
-    Move from 16 to 2: 14 fuel
-    Move from 1 to 2: 1 fuel
-    Move from 2 to 2: 0 fuel
-    Move from 0 to 2: 2 fuel
-    Move from 4 to 2: 2 fuel
-    Move from 2 to 2: 0 fuel
-    Move from 7 to 2: 5 fuel
-    Move from 1 to 2: 1 fuel
-    Move from 2 to 2: 0 fuel
-    Move from 14 to 2: 12 fuel
-
-This costs a total of 37 fuel. This is the cheapest possible outcome; more expensive outcomes include aligning at position 1 (41 fuel), position 3 (39 fuel), or position 10 (71 fuel).
-
-Determine the horizontal position that the crabs can align to using the least fuel possible. How much fuel must they spend to align to that position?
+Find all of the low points on your heightmap. What is the sum of the risk levels of all low points on your heightmap?
 
 Your puzzle answer was X.
 --- Part Two ---
 
-The crabs don't seem interested in your proposed solution. Perhaps you misunderstand crab engineering?
+Next, you need to find the largest basins so you know what areas are most important to avoid.
 
-As it turns out, crab submarine engines don't burn fuel at a constant rate. Instead, each change of 1 step in horizontal position costs 1 more unit of fuel than the last: the first step costs 1, the second step costs 2, the third step costs 3, and so on.
+A basin is all locations that eventually flow downward to a single low point. Therefore, every low point has a basin, although some basins are very small. Locations of height 9 do not count as being in any basin, and all other locations will always be part of exactly one basin.
 
-As each crab moves, moving further becomes more expensive. This changes the best horizontal position to align them all on; in the example above, this becomes 5:
+The size of a basin is the number of locations within the basin, including the low point. The example above has four basins.
 
-    Move from 16 to 5: 66 fuel
-    Move from 1 to 5: 10 fuel
-    Move from 2 to 5: 6 fuel
-    Move from 0 to 5: 15 fuel
-    Move from 4 to 5: 1 fuel
-    Move from 2 to 5: 6 fuel
-    Move from 7 to 5: 3 fuel
-    Move from 1 to 5: 10 fuel
-    Move from 2 to 5: 6 fuel
-    Move from 14 to 5: 45 fuel
+The top-left basin, size 3:
 
-This costs a total of 168 fuel. This is the new cheapest possible outcome; the old alignment position (2) now costs 206 fuel instead.
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
 
-Determine the horizontal position that the crabs can align to using the least fuel possible so they can make you an escape route! How much fuel must they spend to align to that position?
+The top-right basin, size 9:
+
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
+
+The middle basin, size 14:
+
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
+
+The bottom-right basin, size 9:
+
+2199943210
+3987894921
+9856789892
+8767896789
+9899965678
+
+Find the three largest basins and multiply their sizes together. In the above example, this is 9 * 14 * 9 = 1134.
+
+What do you get if you multiply together the sizes of the three largest basins?
 
 Your puzzle answer was X.
