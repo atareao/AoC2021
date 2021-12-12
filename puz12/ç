@@ -1,0 +1,166 @@
+use std::collections::HashMap;
+use std::convert::TryInto;
+use log::debug;
+
+pub fn part1(data: &str) -> u32{
+    let caves: HashMap<&str, Vec<&str>> = get_caves(data);
+    let mut paths: Vec<Vec<&str>> = Vec::new();
+    let mut first_path = Vec::new();
+    let mut end = false;
+    first_path.push("start");
+    paths.push(first_path);
+    'main: loop{
+        end = true;
+        'check: for apath in paths{
+            if !apath.contains(&"end"){
+                end = false;
+                break 'check;
+            }
+        }
+        if end == true{
+            break 'main;
+        }
+    }
+    1
+}
+fn get_paths(caves: &HashMap<String, Vec<&str>>, leftpath: Vec<String>){
+    let mut paths: Vec<Vec<&str>> = Vec::new();
+    let last_cave = leftpath.last().unwrap();
+    for child_cave in caves[last_cave]{
+        let mut apath = leftpath.clone();
+        if &child_cave != last_cave && (child_cave.to_lowercase() != child_cave.to_string() {//|| !leftpath.contains(&child_cave) ){
+            apath.push(child_cave);
+        }
+        let tlast = apath.last().unwrap();
+        for item in caves[tlast]{
+
+        }
+    }
+}
+pub fn part2(data: &str) -> i64 {
+    let mut vueltas = 0;
+    let mut field = get_field(data);
+    let width = field.len();
+    let height = field[0].len();
+    'principal:for step in 0..1000{
+        for x in 0..width{
+            for y in 0..height{
+                increase_octopus(&mut field, x.try_into().unwrap(), y.try_into().unwrap(), width.try_into().unwrap(), height.try_into().unwrap());
+            }
+        }
+        for x in 0..width{
+            for y in 0..height{
+                if field[x][y] > 9 {
+                    field[x][y] = 0;
+                }
+            }
+        }
+        println!("Vuelta: {}", step);
+        for y in 0..height{
+            for x in 0..width{
+                if field[x][y] != 0 {
+                    continue 'principal;
+                }
+            }
+        }
+
+        vueltas = step;
+        break;
+    }
+    vueltas + 1
+}
+
+fn increase_octopus(field: &mut Vec<Vec<u32>>, x: i32, y: i32, width: i32, height: i32){
+    if x >= 0 && y >= 0 && x < width && y < height {
+        let xa: usize = x.try_into().unwrap();
+        let ya: usize = y.try_into().unwrap();
+        field[xa][ya] += 1;
+        if field[xa][ya] == 10 {
+            for incx in -1..2{
+                for incy in -1..2{
+                    if incx == 0 && incy == 0{
+                        continue;
+                    }else{
+                        increase_octopus(field, x + incx, y + incy, width, height);
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn get_caves(data: &str) -> HashMap<&str, Vec<&str>> {
+    let mut caves = HashMap::new();
+    for line in data.lines(){
+        let izde:Vec<&str> = line.split('-').collect();
+        if !caves.contains_key(izde[0]){
+            caves[izde[0]] = Vec::new();
+            caves[izde[0]].push(izde[1]);
+        }else if !caves[izde[0]].contains(&izde[1]){
+            caves[izde[0]].push(izde[1]);
+        }
+        if !caves.contains_key(izde[1]){
+            caves[izde[1]] = Vec::new();
+            caves[izde[1]].push(izde[1]);
+        }else if !caves[izde[1]].contains(&izde[0]){
+            caves[izde[1]].push(izde[0]);
+        }
+    }
+    caves
+}
+
+fn calculate_score(completion: &Vec<char>) -> i64{
+    let mut score = 0;
+    for item in completion{
+        let value = match item{
+            ')' => 1,
+            ']' => 2,
+            '}' => 3,
+            _ => 4
+        };
+        score = score * 5 + value;
+    }
+    score
+}
+fn get_position_of_last_one(ceros: &Vec<i32>) -> usize{
+    let mut last_position = 0;
+    for (index, cero) in ceros.iter().enumerate(){
+        if cero == &1{
+            last_position = index;
+        }
+    }
+    last_position
+}
+
+
+fn is_close_char(achar: char) -> bool {
+    achar == '}' || achar == ']' || achar == ')' || achar == '>'
+}
+
+fn get_close_char(achar: char) -> char {
+    match achar {
+        '}' => '{',
+        ']' => '[',
+        ')' => '(',
+        _ => '<',
+    }
+}
+fn is_corrupted(line: &str) -> bool {
+    let chars: Vec<char> = line.chars().collect();
+    let mut ceros = Vec::new();
+    for achar in line.chars(){
+        if !is_close_char(achar){
+            ceros.push(1);
+        }else{
+            let close_char = get_close_char(achar);
+            let last_position = get_position_of_last_one(&ceros);
+            if chars[last_position] == close_char{
+                ceros[last_position] = 0;
+                ceros.push(0);
+            }else{
+                return true;
+            }
+        }
+    }
+    false
+}
