@@ -32,8 +32,8 @@ fn complete_sample(){
     let height = original.len();
     let mut processed = vec![vec![0usize; width]; height];
     let mut contador = 0;
-    for x in 1..(width - 1){
-        for y in 1..(height - 1){
+    for x in 0..width{
+        for y in 0..height{
             let binary = get_data(&original, (x, y));
             let decimal = binary_to_decimal(&binary);
             let value = get_value(IEA, decimal);
@@ -44,7 +44,9 @@ fn complete_sample(){
             processed[x][y] = light;
         }
     }
+    println!("===========");
     println!("{}", contador);
+    println!("===========");
     contador = 0;
     for x in 1..(width - 1){
         for y in 1..(height - 1){
@@ -83,7 +85,10 @@ fn test_binary_to_decimal(){
 }
 
 fn binary_to_decimal(binary: &str) -> usize{
-    let intval = isize::from_str_radix(binary, 2).unwrap();
+    let intval = match isize::from_str_radix(binary, 2){
+        Ok(value) => value,
+        _ => {println!("=== {} ===", binary);0}
+    };
     intval.try_into().unwrap()
 }
 
@@ -92,14 +97,17 @@ fn get_value(iea: &str, position: usize) -> &str{
 }
 
 fn get_data(image: &Vec<Vec<usize>>, point: (usize, usize)) -> String{
+    // Reconstruir la imagen teniendo presente el efecto borde
     let mut number = "".to_string();
-    if point.0 > 1 && point.0 < image[0].len() - 2 &&
-            point.1 > 1 && point.1 < image.len() - 2{
-        for x in (point.0 - 1)..(point.0 + 2){
-            for y in (point.1 - 1)..(point.1 + 2){
-                let digit = char::from_digit(image[x][y] as u32, 5).unwrap();
-                number.push(digit)
+    let width = image[0].len();
+    let height = image.len();
+    for x in (point.0 - 1)..(point.0 + 2){
+        for y in (point.1 - 1)..(point.1 + 2){
+            let mut digit = '0';
+            if x > 0 && y > 0 && x < width - 1 && y < height - 1{
+                digit = char::from_digit(image[x][y] as u32, 10).unwrap();
             }
+            number.push(digit)
         }
     }
     number
