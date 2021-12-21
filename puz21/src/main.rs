@@ -116,7 +116,7 @@ fn main() {
     SimpleLogger::new().init().unwrap();
 
     //let data = &read_data_from_url("https://adventofcode.com/2021/day/15/input");
-    let resultado_part1 = part1(IEA, IMAGE);
+    let resultado_part1 = part1();
     println!("Resultado parte 1: {}", resultado_part1);
     //let resultado_part2 = part2(data);
     //println!("Resultado parte 2: {}", resultado_part2);

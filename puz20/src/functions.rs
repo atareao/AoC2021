@@ -1,7 +1,44 @@
-use std::{convert::TryInto, ptr::read};
+use std::{convert::TryInto};
 
-pub fn part1(data: &str) -> usize{
-    0
+pub fn part1(iea: &str, image: &str) -> usize{
+    let original = read_data(image);
+    let width:i32 = original[0].len().try_into().unwrap();
+    let height:i32 = original.len().try_into().unwrap();
+    println!("{}", width);
+    let incx = 100;
+    let incy = 0;
+    let nw:usize = (width + 2 * incx).try_into().unwrap();
+    let nh:usize = (height + 2 * incy).try_into().unwrap();
+    let mut processed = vec![vec![0usize; nw]; nh];
+    let mut contador = 0;
+    for x in (0 - incx)..(width + incx){
+        for y in (0 - incy)..(height + incy){
+            let binary = get_data(&original, x, y);
+            let decimal = binary_to_decimal(&binary);
+            let value = get_value(iea, decimal);
+            let light = if value == "#" {1} else {0};
+            if value == "#" {
+                contador += 1;
+            }
+            let xp: usize = (x + incx).try_into().unwrap();
+            let yp: usize = (y + incy).try_into().unwrap();
+            println!("{}, {}", nw, nh);
+            println!("{}, {} -> {},{}", x, y, xp, yp);
+            processed[xp][yp] = light;
+        }
+    }
+    contador = 0;
+    for x in 0..(width + 2 * incx - 1){
+        for y in 0..(height + 2 * incy - 1){
+            let binary = get_data(&processed, x, y);
+            let decimal = binary_to_decimal(&binary);
+            let value = get_value(IEA, decimal);
+            if value == "#"{
+                contador += 1;
+            }
+        }
+    }
+    contador
 }
 
 pub fn part2(data: &str) -> usize{
@@ -34,7 +71,8 @@ fn complete_sample(){
     let mut contador = 0;
     for x in 0..width{
         for y in 0..height{
-            let binary = get_data(&original, (x, y));
+            let binary = get_data(&original, x.try_into().unwrap(),
+                y.try_into().unwrap());
             let decimal = binary_to_decimal(&binary);
             let value = get_value(IEA, decimal);
             let light = if value == "#" {1} else {0};
@@ -44,13 +82,11 @@ fn complete_sample(){
             processed[x][y] = light;
         }
     }
-    println!("===========");
-    println!("{}", contador);
-    println!("===========");
     contador = 0;
     for x in 1..(width - 1){
         for y in 1..(height - 1){
-            let binary = get_data(&processed, (x, y));
+            let binary = get_data(&processed, x.try_into().unwrap(),
+                y.try_into().unwrap());
             let decimal = binary_to_decimal(&binary);
             let value = get_value(IEA, decimal);
             if value == "#"{
@@ -58,15 +94,13 @@ fn complete_sample(){
             }
         }
     }
-    println!("{}", contador);
-    println!("{}", contador);
     assert_eq!(35, contador);
 }
 
 #[test]
 fn test_get_data(){
     let image = read_data(&IMAGE);
-    let result = get_data(&image, (7, 7));
+    let result = get_data(&image, 7, 7);
     assert_eq!("000100010".to_string(), result);
 }
 
@@ -79,7 +113,7 @@ fn test_get_value(){
 #[test]
 fn test_binary_to_decimal(){
     let image = read_data(&IMAGE);
-    let binary = get_data(&image, (7, 7));
+    let binary = get_data(&image, 7, 7);
     let decimal = binary_to_decimal(&binary);
     assert_eq!(34, decimal);
 }
@@ -96,18 +130,21 @@ fn get_value(iea: &str, position: usize) -> &str{
     &iea[position..(position+1)]
 }
 
-fn get_data(image: &Vec<Vec<usize>>, point: (usize, usize)) -> String{
+fn get_data(image: &Vec<Vec<usize>>, xc: i32, yc: i32) -> String{
     // Reconstruir la imagen teniendo presente el efecto borde
     let mut number = "".to_string();
-    let width = image[0].len();
-    let height = image.len();
-    for x in (point.0 - 1)..(point.0 + 2){
-        for y in (point.1 - 1)..(point.1 + 2){
-            let mut digit = '0';
-            if x > 0 && y > 0 && x < width - 1 && y < height - 1{
-                digit = char::from_digit(image[x][y] as u32, 10).unwrap();
+    let width:i32 = image[0].len().try_into().unwrap();
+    let height:i32 = image.len().try_into().unwrap();
+    for x in (xc - 1)..(xc + 2){
+        for y in (yc - 1)..(yc + 2){
+            if x > -1 && y > -1 && x < width && y < height{
+                let i:usize = x.try_into().unwrap();
+                let j:usize = y.try_into().unwrap();
+                let digit = char::from_digit(image[i][j] as u32, 10).unwrap();
+                number.push(digit);
+            }else{
+                number.push('0');
             }
-            number.push(digit)
         }
     }
     number
