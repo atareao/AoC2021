@@ -1,23 +1,27 @@
 use std::{convert::TryInto};
 
-pub fn part1() -> u32{
-    let mut player1 = Player::new("1", 3);
-    let mut player2 = Player::new("2", 7);
+pub fn part1(position1: u32, position2: u32) -> u32{
+    let mut player1 = Player::new("1", position1);
+    let mut player2 = Player::new("2", position2);
     let mut die_value = 1;
     let mut contador = 0;
+    println!("=== Posiciones iniciales: {}, {}", position1, position2);
     loop{
         die_value = player1.play(die_value);
         contador += 3;
-        player1.print();
         if player1.score >= 1000{
             break;
         }
         die_value = player2.play(die_value);
-        player2.print();
+        contador += 3;
         if player2.score >= 1000{
             break;
         }
-        contador += 3;
+        if contador > 1000{
+            println!("=== Lanzamientos: {} ===", contador);
+            player1.print();
+            player2.print();
+        }
     }
     player1.print();
     player2.print();
@@ -65,34 +69,6 @@ impl Player{
 
 #[test]
 fn complete_sample(){
-    let mut player1 = Player::new("1", 4);
-    let mut player2 = Player::new("2", 8);
-    let mut die_value = 1;
-    let mut contador = 0;
-    loop{
-        die_value = player1.play(die_value);
-        contador += 3;
-        player1.print();
-        if player1.score >= 1000{
-            break;
-        }
-        die_value = player2.play(die_value);
-        player2.print();
-        if player2.score >= 1000{
-            break;
-        }
-        contador += 3;
-    }
-    player1.print();
-    player2.print();
-    let value;
-    if player1.score > player2.score{
-        println!("El ganador fue: {}", player1.name);
-        value = player2.score * contador;
-    }else{
-        println!("El ganador fue: {}", player2.name);
-        value = player1.score * contador;
-    }
-    println!("El dado fue lanzado {} veces", contador);
-    assert_eq!(2, value);
+    let value = part1(4, 8);
+    assert_eq!(value, 739785);
 }
