@@ -11,20 +11,17 @@ const TEST_DATA: &str = "1163751742
 1293138521
 2311944581";
 
-#[test]
 fn hello() {
     let expected = 1;
     assert_eq!(1, expected);
 }
 
-#[test]
 fn test_part1(){
     println!("========== PART 1 ==========");
     let result1 = 41;//part1(TEST_DATA);
     assert_eq!(result1, 40);
 }
 
-#[test]
 fn test_part2(){
     println!("========== PART 2 ==========");
     let result1 = 315;//part2(TEST_DATA);

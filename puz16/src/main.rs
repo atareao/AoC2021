@@ -11,7 +11,7 @@ use simple_logger::SimpleLogger;
 fn main() {
     SimpleLogger::new().init().unwrap();
 
-    let data = &read_data_from_url("https://adventofcode.com/2021/day/15/input");
+    let data = &read_data_from_url("https://adventofcode.com/2021/day/16/input");
     let resultado_part1 = part1(data);
     println!("Resultado parte 1: {}", resultado_part1);
     let resultado_part2 = part2(data);
